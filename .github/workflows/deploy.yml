@@ -3,17 +3,16 @@ name: Express API CI/CD
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     services:
-      # MongoDB service لو عايز تشغله خلال الـ workflow
       mongo:
         image: mongo:6
         ports:
@@ -28,28 +27,23 @@ jobs:
           MONGO_INITDB_ROOT_PASSWORD: admin123
 
     steps:
-      # Checkout الكود
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # إعداد Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      # Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Run tests
       - name: Run tests
         run: |
           pytest -v
 
-      # Build and run Docker Compose
       - name: Build and run Docker Compose
         run: |
           docker compose up --build -d
