@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:6
+    container_name: express-api-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    volumes:
+      - mongo_data:/data/db
+
+  express-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: express-api
+    ports:
+      - "5000:5000"
+    environment:
+      MONGO_URI: mongodb://admin:admin123@mongo:27017/admin
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:
+
